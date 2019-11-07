@@ -3,52 +3,61 @@ import java.util.TreeMap;
 
 public class Main {
     public static void main(String[] args) {
-        TreeMap<String, Integer> telBook = new TreeMap<>();
+        TreeMap<Integer, String> telBook = new TreeMap<>();
         Scanner scanner = new Scanner(System.in);
-        String number;
-
+        Integer number;
+        String numberString;
 
         for(;;){
             String text = scanner.nextLine();
 
             if (text.matches("^LIST$")) { // LIST
                 System.out.println("Список телефонных номеров: ");
-                for (String word : telBook.keySet()) {
-                    System.out.println(word + " - " + telBook.get(word));
+                for (Integer num : telBook.keySet()) {
+                    System.out.println(num + " - " + telBook.get(num));
                 }
             }
             else if (text.matches("^[a-zA-Zа-яА-ЯЪъ]+$")) { // поиск по имени
-                if (!telBook.keySet().contains(text)){
+                if (!telBook.containsValue(text)){
                     System.out.println("Введите номер телефона");
-                    number = scanner.nextLine().replaceAll("\\D", "");
-                    telBook.put(text, Integer.parseInt(number));
-                    System.out.println("Номер телефона " + number + " сохранен");
+                    numberString = scanner.nextLine().replaceAll("\\D", "");
+                    number = Integer.parseInt(numberString);
+                    if (telBook.containsKey(number)){
+                        System.out.println("Имя будет изменено для данного номера на " + text);
+                        telBook.put(number, text);
+                    }
+                    else {
+                        telBook.put(number, text);
+                        System.out.println("Номер телефона " + number + " сохранен");
+                    }
                 }
-                else if (telBook.keySet().contains(text)){
-                    System.out.println("Имя: " + text + " - Номер телефона: " + telBook.get(text));
+                else {
+                    for(Integer num: telBook.keySet()) {
+                        if(text.equals(telBook.get(num))) {
+                            System.out.println("Имя: " + text + " - Номер телефона: " + num);
+                        }
+                    }
                 }
             }
 
             if (text.matches("^[-\\+()0-9]+$")){   // поиск по номеру
-                number = text.replaceAll("\\D", "");
-                if(!telBook.containsValue(Integer.parseInt(number))){
+                numberString = text.replaceAll("\\D", "");
+                number = Integer.parseInt(numberString);
+                if(!telBook.containsKey(number)){
                     System.out.println("Введите Имя");
                     text = scanner.nextLine();
                     if(text.matches("^[a-zA-Zа-яА-ЯЪъ]+$")) {
-                        telBook.put(text, Integer.parseInt(number));
+                        telBook.put(number, text);
                         System.out.println("Имя " + text + " сохранено");
                     }
                     else {
                         System.out.println("Введите корректное имя");
                     }
-                }else if (telBook.containsValue(Integer.parseInt(number))){
-                    for (String word: telBook.keySet()){
-                        if(telBook.get(word) == Integer.parseInt(number)){
-                            System.out.println("Имя: " + word + " - Номер телефона: " + number);
-                        }
-                    }
+                }else{
+                    System.out.println("Имя: " + telBook.get(number) + " - Номер телефона: " + number );
                 }
             }
         }
     }
 }
+
